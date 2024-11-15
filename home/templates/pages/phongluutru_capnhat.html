@@ -1,0 +1,9 @@
+{% block content %}
+<h1>Cập nhật phông lưu trữ</h1>
+<form id="capNhatPhongLuuTruForm" method="post" action="{% url 'phongluutru_capnhat' phongluutru.id %}">
+    {% csrf_token %}
+    <input type="hidden" name="phongluutruId" value="{{ phongluutru.id }}">
+    {{ form.as_p }}
+    <button type="submit">Lưu thay đổi</button>
+</form>
+{% endblock %}

@@ -1,0 +1,53 @@
+.fit-content {
+    width: fit-content !important;
+}
+
+.btn img {
+    min-width: 1.125rem !important;
+    width: 1.125rem !important;
+}
+
+/*
+    Override the navbar styles
+*/
+.navbar-brand .navbar-brand-image {
+    width: 2.75rem !important;
+    height: 2.75rem !important;
+}
+
+.navbar-brand a:hover {
+    text-decoration: none !important;
+}
+
+/*
+    Override the default table styles
+*/
+.table-responsive {
+    height: 60vh !important;
+    max-height: 60vh !important;
+}
+
+table thead tr th {
+    background-color: var(--tblr-gray-300) !important;
+    font-size: 0.875rem !important;
+    text-transform: none !important;
+    color: var(--tblr-body-color) !important;
+}
+
+.card-table tr td:first-child,
+.card-table tr th:first-child,
+.card-table tr td:last-child {
+    padding: .75rem !important;
+}
+
+/*
+    Override the default sidebar styles
+*/
+.navbar.navbar-vertical {
+    background: #182433;
+    color: #fcfdfe;
+    overflow-y: auto;
+}
+
+
+

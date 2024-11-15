@@ -1,0 +1,7 @@
+<h1>Cập nhật Hồ Sơ</h1>
+<form id="capNhatHoSoForm" method="post" action="{% url 'hoso_capnhat' hoso.id %}">
+    {% csrf_token %}
+    <input type="hidden" name="hoSoId" value="{{ hoso.id }}">
+    {{ form.as_p }}
+    <button type="submit">Lưu thay đổi</button>
+</form>

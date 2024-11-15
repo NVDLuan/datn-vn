@@ -1,0 +1,78 @@
+name: Django CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: ['3.8']
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Run Tests
+      run: |
+        python manage.py test
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Deploy to Server
+      uses: appleboy/ssh-action@v0.1.5
+      with:
+        host: ${{ secrets.DEPLOY_HOST }}
+        username: ${{ secrets.DEPLOY_USER }}
+        key: ${{ secrets.DEPLOY_KEY }}
+        port: ${{ secrets.DEPLOY_PORT }}
+        script: |
+          sudo systemctl stop gunicorn.service
+          sudo systemctl disable gunicorn.service
+          sudo rm /etc/systemd/system/gunicorn.service
+          sudo systemctl daemon-reload
+          sleep 2
+          cd /root/records-management-mini
+          # rm -rf db.sqlite3
+          sleep 2
+          git remote set-url origin git@github.com:anhtudotinfo/records-management-mini.git
+          git pull origin master
+          source env/bin/activate
+          pip install -r requirements.txt
+          python manage.py makemigrations
+          python manage.py migrate
+          # Create Gunicorn systemd service file
+          # Create Gunicorn systemd service file
+          echo "[Unit]
+          Description=Gunicorn instance to serve records_management_mini
+          After=network.target
+
+          [Service]
+          User=${{ secrets.DEPLOY_USER }}
+          Group=www-data
+          WorkingDirectory=/root/records-management-mini
+          Environment=\"PATH=/root/records-management-mini/env/bin\"
+          ExecStart=/root/records-management-mini/env/bin/gunicorn --workers 3 --bind 0.0.0.0:8000 core.wsgi:application
+
+          [Install]
+          WantedBy=multi-user.target" | sudo tee /etc/systemd/system/gunicorn.service
+          # Reload systemd to recognize the new service
+          sudo systemctl daemon-reload
+          # Enable and start the Gunicorn service
+          sudo systemctl enable gunicorn
+          sudo systemctl restart gunicorn

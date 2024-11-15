@@ -1,0 +1,7 @@
+<h1>Cập nhật Văn Bản</h1>
+<form id="capNhatVanBanForm" method="post" action="{% url 'vanban_capnhat' vanban.id %}">
+    {% csrf_token %}
+    <input type="hidden" name="vanbanId" value="{{ vanban.id }}">
+    {{ form.as_p }}
+    <button type="submit">Lưu thay đổi</button>
+</form>

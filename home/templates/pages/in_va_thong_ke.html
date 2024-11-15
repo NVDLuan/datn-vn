@@ -1,0 +1,369 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}In ấn và Thống kê{% endblock title %}
+{% block body %}layout-fluid{% endblock body %}
+
+{% block content %}
+<div class="page-wrapper">
+  <div class="page-header d-print-none">
+    <div class="container-xl">
+      <div class="row g-2 align-items-center">
+        <div class="col">
+          <h2 class="page-title">
+            In ấn và Thống kê
+          </h2>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="container-xl">
+      <div class="row row-deck row-cards">
+        <!-- Thống kê -->
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Thống kê</h3>
+            </div>
+            <div class="card-body">
+              <table class="table table-bordered table-vcenter">
+                <thead>
+                  <tr>
+                    <th>Nội dung</th>
+                    <th>Số lượng</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Tổng số phông</td>
+                    <td>{{ tong_so_phong }}</td>
+                  </tr>
+                  <tr>
+                    <td>Tổng số MLHS</td>
+                    <td>{{ tong_so_mlhs }}</td>
+                  </tr>
+                  <tr>
+                    <td>Tổng số hồ sơ</td>
+                    <td>{{ tong_so_ho_so }}</td>
+                  </tr>
+                  <tr>
+                    <td>Tổng số văn bản</td>
+                    <td>{{ tong_so_van_ban }}</td>
+                  </tr>
+                  <tr>
+                    <td>Tổng số văn bản đã số hóa</td>
+                    <td>{{ tong_so_van_ban_da_so_hoa }}</td>
+                  </tr>
+                  {% for thoi_han, so_luong in thong_ke_ho_so_theo_thoi_han.items %}
+                    <tr>
+                      <td>Tổng số hồ sơ bảo quản {{ thoi_han }}</td>
+                      <td>{{ so_luong }}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <!-- In ấn -->
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">In ấn</h3>
+            </div>
+            <div class="card-body">
+              <table class="table table-bordered table-vcenter">
+                <thead>
+                  <tr>
+                    <th>Loại in</th>
+                    <th>Đơn vị</th>
+                    <th>Thông tin</th>
+                    <th>Tùy chọn</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>In MLHS theo thời hạn bảo quản</td>
+                    <td>
+                        <select class="form-select" id="don_vi_id_thoihan">
+                            <option value="">Chọn đơn vị</option>
+                            {% for don_vi in don_vi_list %}
+                            <option value="{{ don_vi.id }}">{{ don_vi.ten_don_vi }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                      <select class="form-select" id="thoi_han_id">
+                        <option value="">Chọn thời hạn bảo quản</option>
+                      </select>
+                    </td>
+                    
+                    <td>
+                      <button class="btn btn-primary" onclick="inThoiHanBaoQuan()">Xuất</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>In Mục lục hồ sơ</td>
+                    <td>
+                      <select class="form-select" id="don_vi_id_mucluc">
+                        <option value="">Chọn đơn vị</option>
+                        {% for don_vi in don_vi_list %}
+                          <option value="{{ don_vi.id }}">{{ don_vi.ten_don_vi }}</option>
+                        {% endfor %}
+                      </select>
+                    </td>
+                    <td>
+                      <select class="form-select" id="muc_luc_ho_so_id">
+                        <option value="">Chọn mục lục hồ sơ</option>
+                      </select>
+                    </td>
+                    <td>
+                      <button class="btn btn-primary" onclick="inMucLucHoSo()">Xuất</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>In mục lục văn bản thuộc hồ sơ</td>
+                    <td>
+                        <select class="form-select" id="don_vi_id_vanban">
+                            <option value="">Chọn đơn vị</option>
+                            {% for don_vi in don_vi_list %}
+                            <option value="{{ don_vi.id }}">{{ don_vi.ten_don_vi }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                      <select class="form-select" id="ho_so_id">
+                        <option value="">Chọn hồ sơ</option>
+                      </select>
+                    </td>
+                    <td>
+                      <button class="btn btn-primary" onclick="inMucLucVanBan()">Xuất</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>In bìa hồ sơ</td>
+                    <td>
+                        <select class="form-select" id="don_vi_id_bia">
+                            <option value="">Chọn đơn vị</option>
+                            {% for don_vi in don_vi_list %}
+                            <option value="{{ don_vi.id }}">{{ don_vi.ten_don_vi }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <select class="form-select" id="bia_ho_so_id">
+                            <option value="">Chọn hồ sơ</option>
+                          </select>
+                        </div>
+                        <div class="col-md-6">
+                          <select class="form-select" id="bia_phong_so">
+                            <option value="">Chọn phông số</option>
+                          </select>
+                        </div>
+                      </div>
+                    </td>
+                    
+                    <td>
+                      <button class="btn btn-primary" onclick="inBiaHoSo()">Xuất</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>In phiếu mượn</td>
+                    <td>
+                        <select class="form-select" id="don_vi_id_phieu">
+                            <option value="">Chọn đơn vị</option>
+                            {% for don_vi in don_vi_list %}
+                            <option value="{{ don_vi.id }}">{{ don_vi.ten_don_vi }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                      <div class="row">
+                        <div class="col-md-4">
+                          <input type="text" class="form-control" id="so_phieu" placeholder="Nhập số phiếu">
+                        </div>
+                        <div class="col-md-4">
+                          <input type="text" class="form-control" id="ho_ten" placeholder="Nhập họ tên">
+                        </div>
+                        <div class="col-md-4">
+                          <input type="text" class="form-control" id="so_cccd" placeholder="Nhập số CCCD">
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <button class="btn btn-primary" onclick="inPhieuMuon()">Xuất</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>In báo cáo thống kê</td>
+                    <td>
+                        <select class="form-select" id="don_vi_id_baocao">
+                            <option value="">Chọn đơn vị</option>
+                            {% for don_vi in don_vi_list %}
+                            <option value="{{ don_vi.id }}">{{ don_vi.ten_don_vi }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td><input type="text" class="form-control" id="ten_co_quan" placeholder="Nhập tên cơ quan"></td>
+                    
+                    <td>
+                      <button class="btn btn-primary" onclick="inBaoCaoThongKe()">Xuất</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block extrajs %}
+<script>
+  // Lấy danh sách mục lục hồ sơ, hồ sơ, phông lưu trữ, thời hạn bảo quản khi đơn vị thay đổi
+  $(document).ready(function() {
+    $('#don_vi_id_mucluc, #don_vi_id_thoihan, #don_vi_id_vanban, #don_vi_id_bia, #don_vi_id_phieu, #don_vi_id_baocao').change(function() {
+      var donViId = $(this).val();
+      if (donViId) {
+        $.ajax({
+          url: '/lay-danh-sach-lien-quan/', // Thay thế bằng URL của view xử lý
+          type: 'GET',
+          data: {
+            'don_vi_id': donViId
+          },
+          dataType: 'json',
+          success: function(data) {
+            // Cập nhật danh sách mục lục hồ sơ
+            var mucLucHoSoSelect = $('#muc_luc_ho_so_id');
+            mucLucHoSoSelect.empty();
+            mucLucHoSoSelect.append('<option value="">Chọn mục lục hồ sơ</option>');
+            $.each(data.muc_luc_ho_so, function(index, mucLuc) {
+              mucLucHoSoSelect.append('<option value="' + mucLuc.id + '">' + mucLuc.muc_luc_so + '</option>');
+            });
+
+            // Cập nhật danh sách hồ sơ
+            var hoSoSelect = $('#ho_so_id, #bia_ho_so_id'); 
+            hoSoSelect.empty();
+            hoSoSelect.append('<option value="">Chọn hồ sơ</option>');
+            $.each(data.ho_so, function(index, hoSo) {
+              hoSoSelect.append('<option value="' + hoSo.id + '">' + hoSo.ho_so_so + '</option>');
+            });
+
+            // Cập nhật danh sách phông lưu trữ
+            var phongLuuTruSelect = $('#bia_phong_so'); 
+            phongLuuTruSelect.empty();
+            phongLuuTruSelect.append('<option value="">Chọn phông lưu trữ</option>');
+            $.each(data.phong_luu_tru, function(index, phong) {
+              phongLuuTruSelect.append('<option value="' + phong.id + '">' + phong.name + '</option>');
+            });
+
+            // Cập nhật danh sách thời hạn bảo quản
+            var thoiHanBaoQuanSelect = $('#thoi_han_id'); 
+            thoiHanBaoQuanSelect.empty();
+            thoiHanBaoQuanSelect.append('<option value="">Chọn thời hạn bảo quản</option>');
+            $.each(data.thoi_han_bao_quan, function(index, thoiHan) {
+              thoiHanBaoQuanSelect.append('<option value="' + thoiHan.id + '">' + thoiHan.ten + '</option>');
+            });
+          },
+          error: function(error) {
+            console.error('Lỗi khi lấy danh sách liên quan:', error);
+            alert('Có lỗi xảy ra khi lấy danh sách liên quan.');
+          }
+        });
+      } else {
+        // Xóa danh sách mục lục hồ sơ, hồ sơ, phông lưu trữ, thời hạn bảo quản
+        $('#muc_luc_ho_so_id').empty();
+        $('#muc_luc_ho_so_id').append('<option value="">Chọn mục lục hồ sơ</option>');
+        $('#ho_so_id, #bia_ho_so_id').empty();
+        $('#ho_so_id, #bia_ho_so_id').append('<option value="">Chọn hồ sơ</option>');
+        $('#bia_phong_so').empty();
+        $('#bia_phong_so').append('<option value="">Chọn phông lưu trữ</option>');
+        $('#thoi_han_id').empty(); 
+        $('#thoi_han_id').append('<option value="">Chọn thời hạn bảo quản</option>');
+      }
+    });
+  });
+
+  function inThoiHanBaoQuan() {
+    var donViId = document.getElementById('don_vi_id_thoihan').value;
+    var thoiHanId = document.getElementById('thoi_han_id').value;
+
+    if (donViId && thoiHanId) {
+      // Gửi request đến server để xử lý in ấn
+      window.location.href = `{% url 'in_thoi_han_bao_quan' %}?don_vi_id=${donViId}&thoi_han_id=${thoiHanId}`;
+    } else {
+      alert('Vui lòng chọn đơn vị và thời hạn bảo quản.');
+    }
+  }
+
+  function inMucLucHoSo() {
+    var donViId = document.getElementById('don_vi_id_mucluc').value;
+    var mucLucHoSoId = document.getElementById('muc_luc_ho_so_id').value;
+
+    if (donViId && mucLucHoSoId) {
+      // Gửi request đến server để xử lý in ấn
+      window.location.href = `{% url 'in_muc_luc_ho_so' %}?don_vi_id=${donViId}&muc_luc_ho_so_id=${mucLucHoSoId}`;
+    } else {
+      alert('Vui lòng chọn đơn vị và mục lục hồ sơ.');
+    }
+  }
+
+  function inMucLucVanBan() {
+    var donViId = document.getElementById('don_vi_id_vanban').value;
+    var hoSoId = document.getElementById('ho_so_id').value;
+
+    if (donViId && hoSoId) {
+      // Gửi request đến server để xử lý in ấn
+      window.location.href = `{% url 'in_muc_luc_van_ban_thuoc_ho_so' %}?don_vi_id=${donViId}&ho_so_id=${hoSoId}`;
+    } else {
+      alert('Vui lòng chọn đơn vị và số hồ sơ.');
+    }
+  }
+
+  function inBiaHoSo() {
+    var donViId = document.getElementById('don_vi_id_bia').value;
+    var hoSoId = document.getElementById('bia_ho_so_id').value;
+    var phongSo = document.getElementById('bia_phong_so').value;
+
+    if (donViId && hoSoId && phongSo) {
+      // Gửi request đến server để xử lý in ấn
+      window.location.href = `{% url 'in_bia_ho_so' %}?don_vi_id=${donViId}&ho_so_id=${hoSoId}&phong_so=${phongSo}`;
+    } else {
+      alert('Vui lòng chọn đơn vị, số hồ sơ, phông số.');
+    }
+  }
+
+  function inPhieuMuon() {
+    var donViId = document.getElementById('don_vi_id_phieu').value;
+    var soPhieu = document.getElementById('so_phieu').value;
+    var hoTen = document.getElementById('ho_ten').value;
+    var soCccd = document.getElementById('so_cccd').value;
+
+    if (donViId && soPhieu && hoTen && soCccd) {
+      // Gửi request đến server để xử lý in ấn
+      window.location.href = `{% url 'in_phieu_muon' %}?don_vi_id=${donViId}&so_phieu=${soPhieu}&ho_ten=${hoTen}&so_cccd=${soCccd}`;
+    } else {
+      alert('Vui lòng chọn đơn vị, số phiếu, họ tên, số CCCD .');
+    }
+  }
+
+  function inBaoCaoThongKe() {
+    var donViId = document.getElementById('don_vi_id_baocao').value;
+    var tenCoQuan = document.getElementById('ten_co_quan').value;
+
+
+    if (donViId ) {
+      // Gửi request đến server để xử lý in ấn
+      window.location.href = `{% url 'in_bao_cao_thong_ke' %}?don_vi_id=${donViId}&ten_co_quan=${tenCoQuan}`;
+    } else {
+      alert('Vui lòng chọn đơn vị, tên cơ quan .');
+    }
+  }
+</script>
+{% endblock extrajs %}

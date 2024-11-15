@@ -1,0 +1,265 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}Thống Kê Văn Bản{% endblock title %}
+{% block body %}layout-fluid{% endblock body %}
+
+{% block content %}
+<div class="page-wrapper">
+  <div class="page-header d-print-none">
+    <div class="container-xl">
+      <div class="row g-2 align-items-center">
+        <div class="col">
+          <h2 class="page-title">
+            Thống kê văn bản
+          </h2>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="container-xl">
+      <div class="row row-deck row-cards">
+        <div class="col-sm-6 col-lg-3">
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex align-items-center">
+                <div class="subheader">TỶ LỆ VĂN BẢN ĐÃ SỐ HÓA</div>
+
+              </div>
+              <div class="h1 mb-3">{{ ty_le_da_so_hoa }}%</div>
+              <div class="d-flex mb-2">
+                <div>Conversion rate</div>
+                <div class="ms-auto">
+                  <span class="text-green d-inline-flex align-items-center lh-1">
+                    {{ ty_le_da_so_hoa }}% <!-- Download SVG icon from http://tabler-icons.io/i/trending-up -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon ms-1" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 17l6 -6l4 4l8 -8" /><path d="M14 7l7 0l0 7" /></svg>
+                  </span>
+                </div>
+              </div>
+              <div class="progress progress-sm">
+                <div class="progress-bar bg-primary" style="width: {{ ty_le_da_so_hoa }}%" role="progressbar" aria-valuenow="{{ ty_le_da_so_hoa }}" aria-valuemin="0" aria-valuemax="100" aria-label="{{ ty_le_da_so_hoa }}% Complete">
+                  <span class="visually-hidden">{{ ty_le_da_so_hoa }}% Complete</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex align-items-center">
+                <div class="subheader">Tổng số văn bản hiện có</div>
+                <div class="ms-auto lh-1">
+
+                </div>
+              </div>
+              <div class="d-flex align-items-baseline">
+                <div class="h1 mb-0 me-2">{{ tong_so_van_ban }}</div>
+                
+              </div>
+            </div>
+            <div id="chart-revenue-bg" class="chart-sm"></div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex align-items-center">
+                <div class="subheader">SỐ LƯỢNG VĂN BẢN ĐÃ SỐ HÓA</div>
+              </div>
+              <div class="d-flex align-items-baseline">
+                <div class="h1 mb-3 me-2">{{ so_luong_van_ban.da_so_hoa }}</div>
+                
+              </div>
+              <div id="chart-new-clients" class="chart-sm"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex align-items-center">
+                <div class="subheader">SỐ LƯỢNG VĂN BẢN CHƯA SỐ HÓA</div>
+                <div class="ms-auto lh-1">
+                  
+                </div>
+              </div>
+              <div class="d-flex align-items-baseline">
+                <div class="h1 mb-3 me-2">{{ so_luong_van_ban.chua_so_hoa }}</div>
+              </div>
+              <div id="chart-active-users" class="chart-sm"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Biểu đồ số hóa theo ngày -->
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-body">
+              <h3 class="card-title">Số lượng văn bản đã số hóa theo ngày</h3>
+              <canvas id="so-hoa-theo-ngay"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Biểu đồ số hóa theo tháng -->
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-body">
+              <h3 class="card-title">Số lượng văn bản đã số hóa theo tháng</h3>
+              <canvas id="so-hoa-theo-thang"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Biểu đồ số hóa theo quý -->
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-body">
+              <h3 class="card-title">Số lượng văn bản đã số hóa theo quý</h3>
+              <canvas id="so-hoa-theo-quy"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Biểu đồ số hóa theo năm -->
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-body">
+              <h3 class="card-title">Số lượng văn bản đã số hóa theo năm</h3>
+              <canvas id="so-hoa-theo-nam"></canvas>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block extrajs %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  // Dữ liệu thống kê
+  const soHoaTheoNgayData = JSON.parse('{{ so_hoa_theo_ngay|safe }}');
+  const soHoaTheoThangData = JSON.parse('{{ so_hoa_theo_thang|safe }}');
+  const soHoaTheoQuyData = JSON.parse('{{ so_hoa_theo_quy|safe }}');
+  const soHoaTheoNamData = JSON.parse('{{ so_hoa_theo_nam|safe }}');
+
+  // Hàm tạo biểu đồ Chart.js
+  function createChart(canvasId, labels, data, label, title) {
+    return new Chart(document.getElementById(canvasId), {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: label,
+          data: data,
+          backgroundColor: 'rgba(54, 162, 235, 0.2)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: title
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  }
+
+  // Tạo biểu đồ số hóa theo ngày
+  createChart(
+    'so-hoa-theo-ngay', 
+    soHoaTheoNgayData.map(item => item.ngay), 
+    soHoaTheoNgayData.map(item => item.so_luong),
+    'Số lượng văn bản',
+    'Số lượng văn bản đã số hóa theo ngày'
+  );
+
+  // Tạo biểu đồ số hóa theo tháng
+  createChart(
+    'so-hoa-theo-thang', 
+    soHoaTheoThangData.map(item => `${item.thang}/${item.nam}`), 
+    soHoaTheoThangData.map(item => item.so_luong),
+    'Số lượng văn bản',
+    'Số lượng văn bản đã số hóa theo tháng'
+  );
+
+  // Tạo biểu đồ số hóa theo quý
+  createChart(
+    'so-hoa-theo-quy', 
+    soHoaTheoQuyData.map(item => `Quý ${item.quy}/${item.nam}`), 
+    soHoaTheoQuyData.map(item => item.so_luong),
+    'Số lượng văn bản',
+    'Số lượng văn bản đã số hóa theo quý'
+  );
+
+  // Tạo biểu đồ số hóa theo năm
+  createChart(
+    'so-hoa-theo-nam', 
+    soHoaTheoNamData.map(item => item.nam), 
+    soHoaTheoNamData.map(item => item.so_luong),
+    'Số lượng văn bản',
+    'Số lượng văn bản đã số hóa theo năm'
+  );
+
+  // Xử lý sự kiện thay đổi đơn vị
+  $(document).ready(function() {
+    $('#don-vi-select').change(function() {
+      var donViId = $(this).val();
+      if (donViId) {
+        $.ajax({
+          url: '{% url 'thong_ke_don_vi_ajax' %}',
+          data: {
+            'don_vi': donViId
+          },
+          dataType: 'json',
+          success: function(data) {
+            if (data.error) {
+              alert(data.error);
+            } else {
+              // Cập nhật biểu đồ số hóa theo đơn vị
+              updateSoHoaTheoDonViChart(data.data);
+            }
+          },
+          error: function() {
+            alert('Có lỗi xảy ra!');
+          }
+        });
+      } else {
+        // Xóa biểu đồ nếu không chọn đơn vị
+        $('#so-hoa-theo-don-vi').empty();
+      }
+    });
+  });
+
+  // Hàm cập nhật biểu đồ số hóa theo đơn vị
+  function updateSoHoaTheoDonViChart(data) {
+    // Xóa biểu đồ cũ (nếu có)
+    $('#so-hoa-theo-don-vi').empty();
+    $('#so-hoa-theo-don-vi').append('<canvas id="new-so-hoa-theo-don-vi"></canvas>');
+
+    // Tạo biểu đồ mới
+    createChart(
+      'new-so-hoa-theo-don-vi', 
+      data.map(item => item.ngay), 
+      data.map(item => item.so_luong),
+      'Số lượng văn bản',
+      'Số lượng văn bản đã số hóa theo đơn vị'
+    );
+  }
+</script>
+{% endblock extrajs %}

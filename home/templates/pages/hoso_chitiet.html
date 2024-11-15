@@ -1,0 +1,46 @@
+{% load static %}
+
+<div class="page-header d-print-none">
+    <div class="container-xl">
+        <div class="row g-2 align-items-center">
+            <div class="col">
+                <h2 class="page-title fw-medium fs-3">
+                    <a href="{% url 'hoso' %}" class="me-2">
+                        <img width="18" height="18" alt="Quay lại"
+                             src="{% static "/icons/arrow-left.svg" %}"/>
+                    </a>
+                    Chi tiết hồ sơ
+                </h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="page-body">
+    <div class="container-xl">
+        <div class="row row-cards">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Hồ sơ số: {{ hoso.ho_so_so }} - {{ hoso.tieu_de }}</h3>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Phòng lưu trữ:</strong> {{ hoso.phong_luu_tru }}</p>
+                        <p><strong>Mục lục hồ sơ:</strong> {{ hoso.muc_luc_ho_so }}</p>
+                        <p><strong>Mã hồ sơ:</strong> {{ hoso.ma_ho_so }}</p>
+                        <p><strong>Phân loại tài liệu lưu trữ:</strong> {{ hoso.phan_loai_tai_lieu_luu_tru }}</p>
+                        <p><strong>Thời hạn bảo quản:</strong> {{ hoso.thoi_han_bao_quan }}</p>
+                        <p><strong>Chế độ sử dụng:</strong> {{ hoso.che_do_su_dung }}</p>
+                        <p><strong>Trạng thái:</strong> {{ hoso.trang_thai }}</p>
+                        <!-- Hiển thị các thông tin khác của hồ sơ -->
+                    </div>
+                    <div class="card-footer">
+                        <!-- <a href="{% url 'hoso_capnhat' hoso.id %}" class="btn btn-primary">Cập nhật</a>
+                        <a href="{% url 'hoso_xoa' hoso.id %}" class="btn btn-danger">Xóa</a>
+                        <a href="{% url 'hoso' %}" class="btn btn-secondary">Quay lại</a> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

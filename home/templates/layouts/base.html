@@ -1,0 +1,32 @@
+<!doctype html>
+{% load i18n static admin_tabler %}
+{% get_current_language as LANGUAGE_CODE %}
+{% get_current_language_bidi as LANGUAGE_BIDI %}
+<html lang="vi">
+<head>
+    <title>{% block title %}{% endblock title %} - Hệ Thống Quản Lý Hồ Sơ Lưu Trữ</title>
+    {% block extrastyle %}{% endblock extrastyle %}
+    {% include 'includes/head.html' %}
+    {% block extrahead %}{% endblock extrahead %}
+</head>
+<body class="{% block body %}{% endblock body %}">
+<script src="{% static 'dist/js/demo-theme.min.js' %}?1684106062"></script>
+<div class="page">
+
+    {% block sidebar %}
+        {% include 'includes/sidebar.html' %}
+    {% endblock sidebar %}
+    <div class="page-wrapper">
+        {% include 'includes/navigation.html' %}
+        {% block content %}{% endblock content %}
+        {% include 'includes/footer.html' %}
+    </div>
+</div>
+{% block modal %}{% endblock modal %}
+<!-- Tabler Core -->
+{% block scripts %}
+    {% include 'includes/scripts.html' %}
+{% endblock scripts %}
+{% block extrajs %}{% endblock extrajs %}
+</body>
+</html>

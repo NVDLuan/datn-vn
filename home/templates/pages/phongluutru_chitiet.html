@@ -1,0 +1,48 @@
+
+{% load static %}
+
+
+    <div class="page-header d-print-none">
+        <div class="container-xl">
+            <div class="row g-2 align-items-center">
+                <div class="col">
+                    <h2 class="page-title fw-medium fs-3">
+                        <a href="{% url 'phongluutru' %}" class="me-2">
+                            <img width="18" height="18" alt="Quay lại"
+                                 src="{% static "/icons/arrow-left.svg" %}"/>
+                        </a>
+                        Chi tiết phông lưu trữ
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-body">
+        <div class="container-xl">
+            <div class="row row-cards">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">{{ phongluutru.name }}</h3>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Phông số:</strong> {{ phongluutru.phong_so }}</p>
+                            <p><strong>Kho lưu trữ:</strong> {{ phongluutru.kho_luu_tru }}</p>
+                            <p><strong>Đơn vị:</strong> {{ phongluutru.don_vi }}</p>
+                            <p><strong>Lịch sử đơn vị hình thành phòng:</strong> {{ phongluutru.lich_su_don_vi_hinh_thanh_phong }}</p>
+                            <p><strong>Năm bắt đầu:</strong> {{ phongluutru.nam_bat_dau }}</p>
+                            <p><strong>Năm kết thúc:</strong> {{ phongluutru.nam_ket_thuc }}</p>
+                            <p><strong>Tổng số tài liệu giấy:</strong> {{ phongluutru.tong_so_tai_lieu_giay }}</p>
+                            <!-- Hiển thị các thông tin khác tương tự -->
+                        </div>
+                        <div class="card-footer">
+                            <!-- <a href="{% url 'phongluutru_capnhat' phongluutru.id %}" class="btn btn-primary">Cập nhật</a>
+                            <a href="{% url 'phongluutru_xoa' phongluutru.id %}" class="btn btn-danger">Xóa</a>
+                            <a href="{% url 'phongluutru' %}" class="btn btn-secondary">Quay lại</a> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

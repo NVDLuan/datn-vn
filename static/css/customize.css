@@ -1,0 +1,11 @@
+.form-control-md {
+    min-height: calc(1.4285714286em + .75rem + calc(var(--tblr-border-width) * 2));
+    padding: 0.125rem 0.25rem;
+    font-size: 0.75rem;
+    border-radius: var(--tblr-border-radius-sm);
+}
+
+.wrap-text {
+    word-wrap: break-word;
+    width: 300px;
+}

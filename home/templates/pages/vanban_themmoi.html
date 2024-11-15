@@ -1,0 +1,6 @@
+<h1>Thêm mới Văn Bản</h1>
+<form id="themMoiVanBanForm" method="post" action="{% url 'vanban_themmoi' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Lưu</button>
+</form>

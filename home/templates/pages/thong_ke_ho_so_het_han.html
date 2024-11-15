@@ -1,0 +1,72 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}Thống Kê Hồ Sơ Hết Hạn{% endblock title %}
+{% block body %}layout-fluid{% endblock body %}
+
+{% block content %}
+  <div class="page-wrapper">
+    <!-- Page header -->
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              Thống Kê Hồ Sơ Hết Hạn Bảo Quản
+            </h2>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Page body -->
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row row-deck row-cards">
+          <div class="col-sm-6 col-lg-3">
+            <div class="card">
+              <div class="card-body">
+                <div class="d-flex align-items-center">
+                  <div class="subheader">Tổng Số Hồ Sơ Hết Hạn</div>
+                </div>
+                <div class="h1 mb-3">{{ total_hoso_hethan }}</div>
+              </div>
+            </div>
+          </div>
+          <!-- Thêm các cột thống kê khác nếu cần -->
+        </div>
+
+        <!-- Bảng danh sách hồ sơ hết hạn -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Danh Sách Hồ Sơ Hết Hạn</h3>
+          </div>
+          <div class="card-table table-responsive">
+            <table class="table table-vcenter">
+              <thead>
+                <tr>
+                  <th>Tiêu đề</th>
+                  <th>Hồ sơ số</th>
+                  <th>Phòng lưu trữ</th>
+                  <th>Thời hạn bảo quản</th>
+                  <th>Thời gian kết thúc</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for hoso in hoso_hethan_list %}
+                <tr>
+                  <td>{{ hoso.tieu_de }}</td>
+                  <td>{{ hoso.ho_so_so }}</td>
+                  <td>{{ hoso.phong_luu_tru.name }}</td>
+                  <td>{{ hoso.thoi_han_bao_quan.ten }}</td>
+                  <td>{{ hoso.thoi_gian_ket_thuc }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+{% endblock content %}

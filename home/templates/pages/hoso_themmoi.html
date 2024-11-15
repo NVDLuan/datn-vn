@@ -1,0 +1,6 @@
+<h1>Thêm mới Hồ Sơ</h1>
+<form id="themMoiHoSoForm" method="post" action="{% url 'hoso_themmoi' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Lưu</button>
+</form>

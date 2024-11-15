@@ -1,0 +1,408 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}Quản Lý Mục Lục Hồ Sơ{% endblock title %}
+{% block body %}layout-fluid{% endblock body %}
+
+{% block content %}
+    <div class="page-wrapper">
+        <!-- Page header -->
+        <div class="page-header d-print-none">
+            <div class="container-xl">
+                <div class="row g-2 align-items-center">
+                    <div class="col">
+                        <h2 class="page-title fw-medium fs-3">
+                            <img class="me-2" width="18" height="18" alt="Thêm mới"
+                                 src="{% static "/icons/home.svg" %}"/>
+                            <span class="text-primary">
+                                Trang chủ
+                                <img width="18" height="18" alt="chevron-right"
+                                     src="{% static "/icons/chevron-right.svg" %}"/></span>
+                            <span>Quản trị hệ thống</span>
+                        </h2>
+                    </div>
+                    <div class="col-auto ms-auto d-print-none w-25">
+                        <form action="." method="get" autocomplete="off" novalidate class="w-full">
+                            <div class="input-icon">
+                          <span class="input-icon-addon">
+                            <img width="18" height="18" alt="chevron-right"
+                                 src="{% static "/icons/search.svg" %}"/>
+                          </span>
+                                <input type="text" name="q" value="{{ query|default:'' }}" class="form-control" placeholder="Tìm kiếm...">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Page body -->
+        <div class="page-body">
+            <div class="container-xl">
+                <div class="row row-deck row-cards">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between">
+                                <div class="card-title">
+                                    <span class="text-primary">Mục lục hồ sơ</span>
+                                    <img width="18" height="18" alt="chevrons-right"
+                                         src="{% static "/icons/chevrons-right.svg" %}"/>
+                                    <span>Danh sách</span>
+                                </div>
+                                <div class="btn-list">
+                                    <button type="button" class="btn btn-success d-none d-sm-flex" data-bs-toggle="modal" data-bs-target="#themMoiMucLucHoSoModal">
+                                        <img class="me-2" width="18" height="18" alt="Thêm mới"
+                                             src="{% static "/icons/plus.svg" %}"/>
+                                        Thêm mới
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body border-bottom py-3">
+                                <div class="d-flex">
+                                    <div class="d-flex align-items-center text-muted">
+                                        <span>Xem</span>
+                                        <div class="mx-2 d-inline-block">
+                                            <input type="text" class="form-control form-control-sm text-center"
+                                                   value="10" size="3"
+                                                   aria-label="Invoices count">
+                                        </div>
+                                        <span>mục</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                              <table class="table table-bordered card-table table-vcenter text-nowrap datatable">
+                                <thead>
+                                <tr>
+                                    <th class="text-center w-1">
+                                        <input class="form-check-input m-0 align-middle" type="checkbox"
+                                               id="selectAllCheckbox">
+                                    </th>
+                                    <th class="text-center w-1 text-primary">#</th>
+                                    <th class="text-center w-1 text-primary">Mục lục số</th>
+                                    <th class="text-center w-1">Phòng lưu trữ</th>
+                                    <th class="text-center">Số trang</th>
+                                    <th class="text-center w-1">Trạng thái</th>
+                                    <th class="text-center"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for mucluchoso in page_obj %}
+                                    <tr>
+                                        <td class="text-center">
+                                            <input class="form-check-input m-0 align-middle recordCheckbox"
+                                                   type="checkbox" value="{{ mucluchoso.id }}">
+                                        </td>
+                                        <td class="text-center">{{ forloop.counter0|add:page_obj.start_index }}</td>
+                                        <td class="text-center">{{ mucluchoso.muc_luc_so }}</td>
+                                        <td class="text-center">{{ mucluchoso.phong_luu_tru }}</td>
+                                        <td class="text-center">{{ mucluchoso.so_trang }}</td>
+                                        <td class="text-center w-1">
+                                            <label>
+                                                <input class="form-check-input m-0 align-middle" type="checkbox"
+                                                       {% if mucluchoso.trang_thai == 'da_so_hoa' %}checked{% endif %}
+                                                       disabled/>
+                                            </label>
+                                        </td>
+                                        <td>
+                                          <div class="d-flex gap-2 justify-content-center">
+                                              <button type="button" class="btn btn-info d-none d-sm-flex"
+                                                      data-bs-toggle="modal"
+                                                      data-bs-target="#chiTietMucLucHoSoModal"
+                                                      onclick="showChiTietModal({{ mucluchoso.id }})">
+                                                  <img alt="Xem chi tiết" src="{% static "/icons/info.svg" %}"/>
+                                              </button>
+                                              <button type="button" class="btn btn-success d-none d-sm-flex"
+                                                      data-bs-toggle="modal"
+                                                      data-bs-target="#capNhatMucLucHoSoModal"
+                                                      onclick="showCapNhatModal({{ mucluchoso.id }})">
+                                                  <img alt="Cập nhật" src="{% static "/icons/edit.svg" %}"/>
+                                              </button>
+                                              <button type="button" class="btn btn-danger d-none d-sm-flex"
+                                                      data-bs-toggle="modal"
+                                                      data-bs-target="#xoaMucLucHoSoModal"
+                                                      onclick="showXoaModal({{ mucluchoso.id }})">
+                                                  <img alt="Xoá" src="{% static "/icons/trash.svg" %}"/>
+                                              </button>
+                                          </div>
+                                      </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            </div>
+                            <div class="card-footer d-flex align-items-center">
+                                <p class="m-0 text-muted">Hiển thị {{ page_obj.start_index }} đến {{ page_obj.end_index }}
+                                    Tổng {{ page_obj.paginator.count }} bản ghi</p>
+                                <ul class="pagination m-0 ms-auto">
+                                    {% if page_obj.has_previous %}
+                                        <li class="page-item"><a class="page-link"
+                                                                 href="?page={{ page_obj.previous_page_number }}">Trước</a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1"
+                                                                         aria-disabled="true">Trước</a></li>
+                                    {% endif %}
+
+                                    {% for page in page_obj.paginator.page_range %}
+                                        {% if page == page_obj.number %}
+                                            <li class="page-item active"><a class="page-link" href="?page={{ page }}">{{ page }}</a>
+                                            </li>
+                                        {% else %}
+                                            <li class="page-item"><a class="page-link"
+                                                                     href="?page={{ page }}">{{ page }}</a></li>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    {% if page_obj.has_next %}
+                                        <li class="page-item"><a class="page-link"
+                                                                 href="?page={{ page_obj.next_page_number }}">Sau</a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled"><a class="page-link" href="#"
+                                                                         tabindex="-1"
+                                                                         aria-disabled="true">Sau</a></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% endblock content %}
+
+ 
+{% block modal %}
+
+  <!-- Modals -->
+  <div class="modal fade" id="themMoiMucLucHoSoModal" tabindex="-1" aria-labelledby="themMoiMucLucHoSoModalLabel"
+  aria-hidden="true">
+ <div class="modal-dialog modal-lg">
+     <div class="modal-content">
+         <div class="modal-header">
+             <h5 class="modal-title" id="themMoiMucLucHoSoModalLabel">Thêm mới mục lục hồ sơ</h5>
+             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+         </div>
+         <div class="modal-body">
+             <div id="themMoiMucLucHoSoModalBody">
+                 <!-- Form sẽ được load ở đây -->
+             </div>
+         </div>
+         <div class="modal-footer">
+             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+             <button type="button" class="btn btn-primary" id="luuMucLucHoSoBtn">Lưu</button>
+         </div>
+     </div>
+ </div>
+</div>
+
+<div class="modal fade" id="chiTietMucLucHoSoModal" tabindex="-1" aria-labelledby="chiTietMucLucHoSoModalLabel"
+  aria-hidden="true">
+ <div class="modal-dialog modal-lg">
+     <div class="modal-content">
+         <div class="modal-header">
+             <h5 class="modal-title" id="chiTietMucLucHoSoModalLabel">Chi Tiết Mục Lục Hồ Sơ</h5>
+             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+         </div>
+         <div class="modal-body" id="chiTietMucLucHoSoModalBody">
+             <!-- Nội dung chi tiết sẽ được load bằng AJAX -->
+         </div>
+         <div class="modal-footer">
+             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+         </div>
+     </div>
+ </div>
+</div>
+
+<div class="modal fade" id="capNhatMucLucHoSoModal" tabindex="-1" aria-labelledby="capNhatMucLucHoSoModalLabel"
+  aria-hidden="true">
+ <div class="modal-dialog modal-lg">
+     <div class="modal-content">
+         <div class="modal-header">
+             <h5 class="modal-title" id="capNhatMucLucHoSoModalLabel">Cập Nhật Mục Lục Hồ Sơ</h5>
+             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+         </div>
+         <div class="modal-body">
+             <form id="capNhatMucLucHoSoForm" method="post">
+                 {% csrf_token %}
+                 <div id="edit-form-container">
+                     <!-- Nội dung form sẽ được load bằng AJAX -->
+                 </div>
+             </form>
+         </div>
+         <div class="modal-footer">
+             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+             <button type="submit" class="btn btn-primary" form="capNhatMucLucHoSoForm">Lưu thay đổi</button>
+         </div>
+     </div>
+ </div>
+</div>
+
+<div class="modal fade" id="xoaMucLucHoSoModal" tabindex="-1" aria-labelledby="xoaMucLucHoSoModalLabel"
+  aria-hidden="true">
+ <div class="modal-dialog">
+     <div class="modal-content">
+         <div class="modal-header">
+             <h5 class="modal-title" id="xoaMucLucHoSoModalLabel">Xóa Mục Lục Hồ Sơ</h5>
+             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+         </div>
+         <div class="modal-body" id="xoaMucLucHoSoModalBody">
+             <p>Bạn có chắc chắn muốn xóa mục lục hồ sơ này?</p>
+         </div>
+         <div class="modal-footer">
+             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+             <button type="button" class="btn btn-danger" id="xacNhanXoaMucLucHoSoBtn">Xóa</button>
+         </div>
+     </div>
+ </div>
+</div>
+
+{% endblock modal %}
+
+{% block extrajs %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+  $(document).ready(function () {
+      // Event delegation cho #selectAllCheckbox
+      $(document).on('change', '#selectAllCheckbox', function () {
+          $('.recordCheckbox').prop('checked', $(this).prop('checked'));
+      });
+
+      // Load form vào modal khi modal được hiển thị
+      $('#themMoiMucLucHoSoModal').on('show.bs.modal', function (event) {
+          $.ajax({
+              url: '{% url 'mucluchoso_themmoi' %}',
+              type: 'GET',
+              success: function (data) {
+                  $('#themMoiMucLucHoSoModalBody').html(data);
+              },
+              error: function (error) {
+                  console.error('Lỗi khi lấy form thêm mới:', error);
+                  // Hiển thị thông báo lỗi cho người dùng
+              }
+          });
+      });
+
+      // Xử lý submit form thêm mới trong modal
+      $('#luuMucLucHoSoBtn').click(function() {
+          $.ajax({
+              url: '{% url 'mucluchoso_themmoi' %}',
+              type: 'POST',
+              data: $('#themMoiMucLucHoSoForm').serialize(), // Lấy dữ liệu từ form trong modal
+              success: function (data) {
+                  if (data.status === 'success') {
+                      // Thêm mới thành công
+                      $('#themMoiMucLucHoSoModal').modal('hide');
+                      location.reload(); // Hoặc cập nhật bảng bằng AJAX
+                  } else {
+                      // Thêm mới thất bại
+                      // Hiển thị thông báo lỗi
+                      alert(data.message);
+                  }
+              },
+              error: function (error) {
+                  console.error('Lỗi khi thêm mới MucLucHoSo:', error);
+                  // Hiển thị thông báo lỗi cho người dùng
+              }
+          });
+      });
+  });
+  function showChiTietModal(mucLucHoSoId) {
+      $.ajax({
+          url: `/mucluchoso/${mucLucHoSoId}/`,
+          type: 'GET',
+          success: function (data) {
+              $('#chiTietMucLucHoSoModalBody').html(data);
+          },
+          error: function (error) {
+              console.error('Lỗi khi lấy chi tiết MucLucHoSo:', error);
+              // Hiển thị thông báo lỗi cho người dùng
+          }
+      });
+  }
+
+  function showCapNhatModal(mucLucHoSoId) {
+    console.log("mucLucHoSoId:", mucLucHoSoId); 
+      $.ajax({
+          url: `/mucluchoso/${mucLucHoSoId}/capnhat/`,
+          type: 'GET',
+          success: function (data) {
+              $('#edit-form-container').html(data);
+              $('#capNhatMucLucHoSoForm').data('mucluchoso-id', mucLucHoSoId);
+          },
+          error: function (error) {
+              console.error('Lỗi khi lấy form cập nhật:', error);
+          }
+      });
+  }
+
+  function showXoaModal(mucLucHoSoId) {
+      $('#xoaMucLucHoSoModalBody').html(`
+          <p>Bạn có chắc chắn muốn xóa mục lục hồ sơ này?</p>
+          <input type="hidden" name="mucLucHoSoId" value="${mucLucHoSoId}">
+      `);
+  }
+
+  $(document).on('click', '#xacNhanXoaMucLucHoSoBtn', function () {
+      var mucLucHoSoId = $('#xoaMucLucHoSoModalBody input[name="mucLucHoSoId"]').val();
+      $.ajax({
+          url: `/mucluchoso/${mucLucHoSoId}/xoa/`,
+          type: 'POST',
+          data: {
+              'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+          },
+          success: function (data) {
+              if (data.status === 'success') {
+                  // Xóa thành công
+                  $('#xoaMucLucHoSoModal').modal('hide');
+                  location.reload(); // Hoặc sử dụng AJAX để cập nhật một phần bảng
+              } else {
+                  // Xóa thất bại
+                  alert(data.message);
+              }
+          },
+          error: function (error) {
+              console.error('Lỗi khi xóa MucLucHoSo:', error);
+              alert('Có lỗi xảy ra khi xóa mục lục hồ sơ.');
+          }
+      });
+  });
+
+
+
+// Xử lý submit form cập nhật
+$(document).on('submit', '#capNhatMucLucHoSoForm', function (event) {
+  event.preventDefault();
+  var mucLucHoSoId = $(this).data('mucluchoso-id');
+  $.ajax({
+    url: `/mucluchoso/${mucLucHoSoId}/capnhat/`,
+    type: 'POST',
+    data: $(this).serialize() + '&mucLucHoSoId=' + mucLucHoSoId,
+    success: function (data) {
+      if (data.status === 'success') {
+        // Cập nhật thành công
+        $('#capNhatMucLucHoSoModal').modal('hide');
+
+        // Cập nhật dữ liệu trong bảng
+        var row = $('#mucluchoso-' + mucLucHoSoId); // Tìm dòng tương ứng với PhongLuuTru được cập nhật
+        row.find('.ten-phong').text(data.ten_phong); // Cập nhật tên phông
+        row.find('.kho-luu-tru').text(data.kho_luu_tru); // Cập nhật kho lưu trữ
+        row.find('.phong-so').text(data.phong_so); // Cập nhật phòng số
+        // ... (Cập nhật các cột dữ liệu khác)
+
+      } else {
+        // Cập nhật thất bại
+        alert(data.message);
+      }
+    },
+    error: function (error) {
+      console.error('Lỗi khi cập nhật MucLucHoSo:', error);
+    }
+  });
+});
+
+</script>
+
+{% endblock extrajs %}

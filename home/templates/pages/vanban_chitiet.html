@@ -1,0 +1,47 @@
+{% load static %}
+
+<div class="page-header d-print-none">
+    <div class="container-xl">
+        <div class="row g-2 align-items-center">
+            <div class="col">
+                <h2 class="page-title fw-medium fs-3">
+                    <a href="{% url 'vanban' %}" class="me-2">
+                        <img width="18" height="18" alt="Quay lại"
+                             src="{% static "/icons/arrow-left.svg" %}"/>
+                    </a>
+                    Chi tiết văn bản
+                </h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="page-body">
+    <div class="container-xl">
+        <div class="row row-cards">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Số Văn Bản: {{ vanban.so_van_ban }} - Ký Hiệu: {{ vanban.ky_hieu_cua_van_ban }}</h3>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Hồ sơ:</strong> {{ vanban.ho_so }}</p>
+                        <p><strong>Số thứ tự văn bản trong hồ sơ:</strong> {{ vanban.so_thu_tu_van_ban_trong_ho_so }}</p>
+                        <p><strong>Loại văn bản:</strong> {{ vanban.loai_van_ban }}</p>
+                        <p><strong>Mã định danh văn bản:</strong> {{ vanban.ma_dinh_danh_van_ban }}</p>
+                        <p><strong>Ngày ban hành:</strong> {{ vanban.ngay_ban_hanh }}</p>
+                        <p><strong>Cơ quan/Tổ chức ban hành:</strong> {{ vanban.co_quan_to_chuc_ban_hanh }}</p>
+                        <p><strong>Thời hạn bảo quản:</strong> {{ vanban.thoi_han_bao_quan }}</p>
+                        <p><strong>Trích yếu nội dung:</strong> {{ vanban.trich_yeu_noi_dung }}</p>
+                        <!-- Hiển thị các thông tin khác của văn bản -->
+                    </div>
+                    <div class="card-footer">
+                        <!-- <a href="{% url 'vanban_capnhat' vanban.id %}" class="btn btn-primary">Cập nhật</a>
+                        <a href="{% url 'vanban_xoa' vanban.id %}" class="btn btn-danger">Xóa</a>
+                        <a href="{% url 'vanban' %}" class="btn btn-secondary">Quay lại</a> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
